@@ -31,7 +31,7 @@ export default function Home() {
 
   {/* LOGO */}
       <img src="/logo.png" width="48"/>
-      <h1>Shelby & Blog Nuyen Nam Thang Image Upload</h1>
+      <h1>Shelby & Blog Nguyen Nam Thang Image Upload</h1>
 
       <input type="file" onChange={upload} />
 
