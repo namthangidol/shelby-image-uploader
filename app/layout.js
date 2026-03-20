@@ -3,13 +3,6 @@ export const metadata = {
   description: "Upload images to Shelby testnet",
 };
 
-export const metadata = {
-  title: "Shelby Image Uploader",
-  description: "Upload images to Shelby testnet",
-  icons: {
-    icon: "/logo48.png",
-  },
-};
 
 export default function RootLayout({ children }) {
   return (
