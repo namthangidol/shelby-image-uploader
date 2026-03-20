@@ -29,13 +29,7 @@ export default function Home() {
   return (
     <div style={{ padding: 40 }}>
 
-  export const metadata = {
-  title: "Shelby Image Uploader",
-  description: "Upload images to Shelby testnet",
-  icons: {
-    icon: "/icon.png",
-  },
-};
+ 
       <h1>Shelby & Blog Nuyen Nam Thang Image Upload</h1>
 
       <input type="file" onChange={upload} />
