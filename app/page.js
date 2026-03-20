@@ -29,7 +29,8 @@ export default function Home() {
   return (
     <div style={{ padding: 40 }}>
 
- 
+  {/* LOGO */}
+      <img src="/logo.png" width="180"/>
       <h1>Shelby & Blog Nuyen Nam Thang Image Upload</h1>
 
       <input type="file" onChange={upload} />
