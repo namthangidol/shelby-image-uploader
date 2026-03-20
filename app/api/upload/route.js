@@ -3,68 +3,47 @@ import { ethers } from "ethers";
 
 export async function POST(req) {
   try {
-    // 📦 lấy file
     const formData = await req.formData();
     const file = formData.get("file");
 
-    if (!file) {
-      throw new Error("No file uploaded");
-    }
-
-    // 🚫 giới hạn size (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      throw new Error("File too large (max 2MB)");
-    }
+    if (!file) throw new Error("No file");
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // 🔐 ENV
     const privateKey = process.env.PRIVATE_KEY;
     const apiKey = process.env.API_KEY;
 
-    if (!privateKey) {
-      throw new Error("Missing PRIVATE_KEY in Vercel");
-    }
+    if (!privateKey) throw new Error("Missing PRIVATE_KEY");
 
-    // 👛 tạo ví
     const wallet = new ethers.Wallet(privateKey);
 
-    // ✅ FIX QUAN TRỌNG: ký bằng chính address
-    const message = wallet.address;
-    const signature = await wallet.signMessage(message);
+    // ✅ tên file (QUAN TRỌNG)
+    const blobName = file.name || `file_${Date.now()}.png`;
 
-    console.log("Wallet:", wallet.address);
+    // ✅ endpoint chuẩn Shelby testnet
+    const url = `https://api.shelbynet.shelby.xyz/shelby/v1/blobs/${wallet.address}/${blobName}`;
 
-    // 🚀 upload Shelby
-    const res = await axios.post(
-      "https://api.shelby.xyz/v1/blobs",
+    // ✅ upload
+    await axios.put(
+      url,
       buffer,
       {
         headers: {
           "Content-Type": "application/octet-stream",
-          "x-signature": signature,
-          "x-address": wallet.address,
           ...(apiKey && { "x-api-key": apiKey }),
         },
       }
     );
 
-    console.log("Shelby response:", res.data);
-
-    // ❗ check response
-    if (!res.data || !res.data.blob_url) {
-      throw new Error("Invalid response from Shelby");
-    }
-
     return Response.json({
       success: true,
-      url: res.data.blob_url,
-      hash: res.data.hash,
-      address: wallet.address, // debug luôn
+      url: url,
+      name: blobName,
+      address: wallet.address,
     });
 
   } catch (err) {
-    console.error("UPLOAD ERROR:", err.message);
+    console.error(err);
 
     return Response.json({
       success: false,
